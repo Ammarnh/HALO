@@ -10,11 +10,14 @@
             background-color: #f0f2f5;
             color: #333;
             margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
         }
         .container {
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
+            box-sizing: border-box;
         }
         .calculator {
             background-color: #ffffff;
@@ -79,8 +82,15 @@
             border-radius: 4px;
         }
         @media screen and (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
             .calculator {
-                width: calc(100% - 40px);
+                padding: 10px;
+                width: calc(100% - 20px);
+            }
+            input {
+                width: calc(100% - 12px);
             }
         }
     </style>
@@ -89,7 +99,7 @@
     <div class="container">
         <div class="calculator">
             <h2>Kalkulator Permutasi</h2>
-            <form action="/hitung_permutasi" method="post">
+            <form onsubmit="calculatePermutation(event)">
                 <label for="n">Jumlah elemen (n):</label>
                 <input type="number" id="n" name="n" required>
                 <label for="r">Elemen yang diambil (r):</label>
@@ -98,21 +108,68 @@
             </form>
             <div class="result">
                 <h3>Hasil Permutasi:</h3>
-                <pre>...</pre>
+                <pre id="permutationResult">...</pre>
+                <h3>Proses Perhitungan:</h3>
+                <pre id="permutationSteps">...</pre>
             </div>
         </div>
         <div class="calculator">
             <h2>Kalkulator Faktorial</h2>
-            <form action="/hitung_faktorial" method="post">
+            <form onsubmit="calculateFactorial(event)">
                 <label for="number">Masukkan sebuah bilangan:</label>
                 <input type="number" id="number" name="number" required>
                 <button type="submit">Hitung Faktorial</button>
             </form>
             <div class="result">
                 <h3>Hasil Faktorial:</h3>
-                <pre>...</pre>
+                <pre id="factorialResult">...</pre>
+                <h3>Proses Perhitungan:</h3>
+                <pre id="factorialSteps">...</pre>
             </div>
         </div>
     </div>
+    <script>
+        function factorial(n) {
+            let result = 1;
+            let steps = `${n}! = `;
+            for (let i = 2; i <= n; i++) {
+                result *= i;
+                steps += `${i}`;
+                if (i < n) steps += ' x ';
+            }
+            steps += ` = ${result}`;
+            return {result, steps};
+        }
+
+        function permutation(n, r) {
+            if (r > n) return {result: 0, steps: "r tidak boleh lebih besar dari n"};
+            let permResult = 1;
+            let steps = `P(${n}, ${r}) = `;
+            for (let i = 0; i < r; i++) {
+                permResult *= (n - i);
+                steps += `${n - i}`;
+                if (i < r - 1) steps += ' x ';
+            }
+            steps += ` = ${permResult}`;
+            return {result: permResult, steps};
+        }
+
+        function calculatePermutation(event) {
+            event.preventDefault();
+            const n = parseInt(document.getElementById('n').value);
+            const r = parseInt(document.getElementById('r').value);
+            const {result, steps} = permutation(n, r);
+            document.getElementById('permutationResult').innerText = result;
+            document.getElementById('permutationSteps').innerText = steps;
+        }
+
+        function calculateFactorial(event) {
+            event.preventDefault();
+            const number = parseInt(document.getElementById('number').value);
+            const {result, steps} = factorial(number);
+            document.getElementById('factorialResult').innerText = result;
+            document.getElementById('factorialSteps').innerText = steps;
+        }
+    </script>
 </body>
 </html>
